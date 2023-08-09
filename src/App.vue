@@ -1,8 +1,29 @@
 <script setup lang="ts">
-import HelloWorld from './components/HelloWorld.vue'
+// import HelloWorld from './components/HelloWorld.vue'
+import { Nav, Alert } from '@/components';
+import { useAuthStore } from '@/stores';
+
+const authStore = useAuthStore();
 </script>
 
 <template>
+  <div class="app-container" :class="authStore.user && 'bg-light'">
+      <Nav>
+      </Nav>
+      <Alert/>
+      <div class="container pt-4 pb-4">
+          <router-view />
+      </div>
+  </div>
+</template>
+
+<style>
+@import '@/assets/base.css';
+</style>
+
+<!--
+
+  <template>
   <router-link to="/">Home</router-link>
   |
   <router-link to="/about">About</router-link>
@@ -32,3 +53,5 @@ import HelloWorld from './components/HelloWorld.vue'
   filter: drop-shadow(0 0 2em #42b883aa);
 }
 </style>
+
+-->
