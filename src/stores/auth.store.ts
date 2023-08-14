@@ -4,20 +4,25 @@ import { fetchWrapper } from '@/helpers';
 import { router } from '@/router';
 import { useAlertStore } from '@/stores';
 
-const baseUrl = `${import.meta.env.VITE_API_URL}/users`;
+const baseUrl = `${import.meta.env.VITE_API_URL}/token`;
 
 export const useAuthStore = defineStore({
     id: 'auth',
     state: () => ({
         // initialize state from local storage to enable user to stay logged in
-        user: null,
-        // JSON.parse(localStorage.getItem('user')),
-        returnUrl: ''
+        user: JSON.parse(localStorage.getItem('user') ?? '{}'),
+        returnUrl: null || ''
     }),
     actions: {
         async login(username: string, password: string) {
             try {
-                const user = await fetchWrapper.post(`${baseUrl}/authenticate`, { username, password });    
+                const body = JSON.stringify(
+                    {
+                        Email: username,
+                        Password: password
+                    }
+                );
+                const user = await fetchWrapper.post(baseUrl, body);    
 
                 // update pinia state
                 this.user = user;

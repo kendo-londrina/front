@@ -7,10 +7,6 @@ const schema = Yup.object().shape({
     username: Yup.string().required('Username is required'),
     password: Yup.string().required('Password is required')
 });
-// var login = {
-//   email: 'edsonkoguishi@gmail.com',
-//   senha: 'Teste@123'
-// }
 
 async function onSubmit(values: any) {
     const authStore = useAuthStore();
@@ -29,17 +25,12 @@ async function onSubmit(values: any) {
                     <Field name="username" type="text" class="form-control"
                         :class="{ 'is-invalid': errors.username }" />
                     <div class="invalid-feedback">{{ errors.username }}</div>
-                    <!-- <input class="form-control" type="text" name="email" id="email"
-                        :class="{ 'is-invalid': errors.username }"
-                        v-model="login.email" placeholder="digite seu email"
-                    > -->
                 </div>
                 <div class="form-group">
                     <label>Password</label>
                     <Field name="password" type="password" class="form-control"
                         :class="{ 'is-invalid': errors.password }" />
                     <div class="invalid-feedback">{{ errors.password }}</div>
-                    <!-- <input class="form-control" type="password" name="senha" id="senha" v-model="login.senha" placeholder="digite sua senha"> -->
                 </div>
                 <div class="form-group">
                     <button class="btn btn-primary" :disabled="isSubmitting">

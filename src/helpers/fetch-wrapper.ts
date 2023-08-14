@@ -7,18 +7,32 @@ export const fetchWrapper = {
     delete: request('DELETE')
 };
 
-function request(method: any) {
-    return async (url: any, body: any) => {
-        const requestOptions = {
-            method,
-            headers: authHeader(url),
-            body
-        };
+function request(method: string) {
+    return async (url: string, body: string) => {
+        // const requestOptions = {
+        //     method,
+        //     headers: authHeader(url)
+        // };
+        // if (body) {
+        //     requestOptions.headers['Content-Type'] = 'application/json';
+        //     requestOptions.body = JSON.stringify(body);
+        // }
+        // const requestOptions = {
+        //     method,
+        //     headers: {
+        //       "Content-type": "application/json",
+        //     },
+        //     body
+        // };
+
+        const options: Record<string, any> = {};
+        options.method = method;
+        options.headers = authHeader(url);
         if (body) {
-            // requestOptions.headers['Content-Type'] = 'application/json';
-            requestOptions.body = JSON.stringify(body);
+            options.headers['Content-Type'] = 'application/json';
+            options.body = body;
         }
-        const response = await fetch(url, requestOptions);
+        const response = await fetch(url, options);
         return handleResponse(response);
     }
 }
@@ -27,15 +41,14 @@ function request(method: any) {
 
 function authHeader(url: string) {
     // return auth header with jwt if user is logged in and request is to the api url
-    // const { user } = useAuthStore();
-    // const isLoggedIn = !!user?.token;
+    const { user } = useAuthStore();
+    const isLoggedIn = !!user?.token;
     const isApiUrl = url.startsWith(import.meta.env.VITE_API_URL);
-    // if (isLoggedIn && isApiUrl) {
-    //     return { Authorization: `Bearer ${user.token}` };
-    // } else {
-    // }
-    if (isApiUrl) return { Authorization: ''};
-    else return { Authorization: ''};
+    if (isLoggedIn && isApiUrl) {
+        return { Authorization: `Bearer ${user.token}` };
+    } else {
+        return { Authorization: ''};
+    }
 }
 
 async function handleResponse(response: any) {
