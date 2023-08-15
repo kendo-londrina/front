@@ -5,19 +5,24 @@ import { fetchWrapper } from '@/helpers';
 
 const baseUrl = `${import.meta.env.VITE_API_URL}/alunos`;
 
-interface AlunoInfo {
+interface AtletaInfo {
+    codigo: string
     nome: string
     dataNascimento: Date
+    sexo: string
+    rg: string
+    cpf: string
     email: string
+    telCelular: string
     id: string
     isDeleting: boolean
 }
   
-export const useAlunosStore = defineStore({
-    id: 'alunos',
+export const useAtletasStore = defineStore({
+    id: 'atletas',
     state: () => ({
-        alunos: [] as AlunoInfo[], // | { loading?: boolean, error?: unknown },
-        aluno: null as AlunoInfo | null,
+        atletas: [] as AtletaInfo[], // | { loading?: boolean, error?: unknown },
+        atleta: null as AtletaInfo | null,
     }),
     actions: {
         // async register(aluno) {
@@ -28,7 +33,7 @@ export const useAlunosStore = defineStore({
             try {
                 const resp = await fetchWrapper.get(baseUrl, '');
                 console.log(resp);
-                this.alunos = resp.data;
+                this.atletas = resp.data;
             } catch (error) {
                 console.log(error);
                 // this.alunos = { error };
@@ -57,14 +62,14 @@ export const useAlunosStore = defineStore({
         //     }
         // },
         async delete(id: string) {
-            // add isDeleting prop to aluno being deleted
-            // this.alunos.find(x => x.id === id).isDeleting = true;
-
-            await fetchWrapper.delete(`${baseUrl}/${id}`, '');
-
-            // remove aluno from list after deleted
-            this.alunos = this.alunos.filter(x => x.id !== id);
-
+            //aluno being deleted
+            const objToDelete = this.atletas.find(x => x.id === id);
+            if (objToDelete) {
+                objToDelete.isDeleting = true;
+                await fetchWrapper.delete(`${baseUrl}/${id}`, '');
+                // remove aluno from list after deleted
+                this.atletas = this.atletas.filter(x => x.id !== id);
+            }
             // auto logout if the logged in aluno deleted their own record
             // const authStore = useAuthStore();
             // if (id === authStore.aluno.id) {

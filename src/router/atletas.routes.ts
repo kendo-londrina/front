@@ -1,7 +1,7 @@
-import { Layout, List, AddEdit } from '@/views/alunos';
+import { Layout, List, AddEdit } from '@/views/atletas';
 
 export default {
-    path: '/alunos',
+    path: '/atletas',
     component: Layout,
     children: [
         { path: '', component: List },
