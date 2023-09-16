@@ -14,19 +14,39 @@ const route = useRoute()
 // }
 
 onMounted(async () => {
-    const id = route.params.id;
-    console.log(id);
-    const atletas = await fetchWrapper.get(baseUrl, '');
-    console.log(atletas);
+    
+    // novoAtleta = route.params.id ? true : false;
+    if (route.params.id) {
+        popularForm(route.params.id as string);
+    } else {
+
+    }
+    // const id = route.params.id;
+    // console.log(id);
+    // const atleta = await fetchWrapper.get(`${baseUrl}/?id=${id}`, '');
+    // console.log(atleta);
     // alert('here');
 })
 
+async function popularForm(idAtleta: string) {
+    const response = await fetchWrapper.get(`${baseUrl}/?id=${idAtleta}`, '');
+    const objAtleta = response[0];
+    console.log(response);
+    console.log(objAtleta);
+    atleta.value.codigo = objAtleta.codigo;
+    atleta.value.nome = objAtleta.nome;
+}
 
-const newItem = ref("");
-const modalidade = ref("Individual");
-const graduacao = ref("Não graduado");
-const praticaIai = ref(false);
-const modalidades = ref([]);
+function formSubmitted() {
+    alert(atleta);
+    console.log(atleta);
+}
+
+// let novoAtleta = false;
+const atleta = ref({
+    codigo: "",
+    nome: "",
+})
 
 </script>
 
@@ -35,60 +55,28 @@ const modalidades = ref([]);
     <br />
     O id do atleta é {{ $route.params.id }}
     <br />
-    <div>
-        <input v-model="newItem" type="text" placeholder="digite algo aqui ...">
-        {{ newItem }}
-    </div>
-    <div>
-        <label>
-            <input type="radio" v-model="modalidade" value="Individual">
-            Individual
-        </label>
-        <label>
-            <input type="radio" v-model="modalidade" value="Equipe">
-            Equipe
-        </label>
-        Modalidade selecionada: {{ modalidade }}
-    </div>
-    <div>
-        <label>
-            <select v-model="graduacao">
-                <option value="Não graduado">Não graduado</option>
-                <option value="1o.Dan">1o.Dan</option>
-                <option value="2o.Dan">2o.Dan</option>
-                <option value="3o.Dan">3o.Dan</option>
-                <option value="4o.Dan">4o.Dan</option>
-                <option value="5o.Dan">5o.Dan</option>
-                <option value="6o.Dan">6o.Dan</option>
-                <option value="7o.Dan">7o.Dan</option>
-            </select>
-        </label>
-        Graduação atual: {{ graduacao }}
-    </div>
-    <div>
-        <label>
-            <input type="checkbox" v-model="praticaIai">
-            Pratica Iaido
-        </label>
-        {{ praticaIai }}
-    </div>
-    <div>
-        <label>
-            <input type="checkbox" v-model="modalidades" value="Iaido">
-            Iaido
-        </label>
-        <label>
-            <input type="checkbox" v-model="modalidades" value="Jodo">
-            Jodo
-        </label>
-        <label>
-            <input type="checkbox" v-model="modalidades" value="Kendo">
-            Kendo
-        </label>
-        {{ modalidades }}
-    </div>
-    <form class="add-iem-form"
-        @submit=""
-    ></form>
+
+    <form class="add-form"
+        @submit="formSubmitted"
+    >
+        <input v-model="atleta.codigo" type="text" 
+            placeholder="código opcional, se informado deve ser único"
+        >
+        <input v-model="atleta.nome" type="text" 
+            placeholder="nome completo"
+        >
+        <br>
+        código: {{ atleta.codigo }}
+        <br>
+        nome: {{ atleta.nome }}
+
+        <button class="btn btn-primary">
+            Salvar
+        </button>
+
+        {{ atleta }}
+
+
+    </form>
 
 </template>
