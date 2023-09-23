@@ -1,25 +1,23 @@
 <script setup lang="ts">
-import { fetchWrapper } from '@/helpers';
+// import { fetchWrapper } from '@/helpers';
 import { onMounted, ref } from 'vue';
 import { useRoute } from 'vue-router';
 import { AtletaDto } from '@/views/atletas/Atleta.dto';
+import { alterarAtleta, inserirAtleta, obterAtleta } from '@/views/atletas/Atleta.service';
 
-const baseUrl = `${import.meta.env.VITE_API_URL}/alunos`;
+// const baseUrl = `${import.meta.env.VITE_API_URL}/alunos`;
 const route = useRoute()
 
 onMounted(async () => {
-    
-    // novoAtleta = route.params.id ? true : false;
     if (route.params.id) {
         popularForm(route.params.id as string);
-    } else {
-
     }
 })
 
 async function popularForm(idAtleta: string) {
-    const response = await fetchWrapper.get(`${baseUrl}/?id=${idAtleta}`, '');
-    const objAtleta = response[0] as AtletaDto;
+    // const response = await fetchWrapper.get(`${baseUrl}/?id=${idAtleta}`, '');
+    const response = await obterAtleta(idAtleta);
+    const objAtleta = response as AtletaDto;
     atleta.value.codigo = objAtleta.codigo;
     atleta.value.nome = objAtleta.nome;
     const x = new Date(objAtleta.dataNascimento);
@@ -33,17 +31,23 @@ async function popularForm(idAtleta: string) {
     atleta.value.email = objAtleta.email;
     atleta.value.telCelular = objAtleta.telCelular;
     atleta.value.religiao = objAtleta.religiao;
+    atleta.value.id = objAtleta.id;
 }
 
-async function alterarAtleta(idAtleta: string) {
-    await fetchWrapper.put(`${baseUrl}/${idAtleta}`, JSON.stringify(atleta.value));
-}
+// async function alterarAtleta(idAtleta: string) {
+//     await fetchWrapper.put(`${baseUrl}/${idAtleta}`, JSON.stringify(atleta.value));
+// }
 
 function formSubmit() {
-    if (route.params.id) {
-        alterarAtleta(route.params.id as string);
-    } else {
-
+    try {
+        if (route.params.id) {
+            // alterarAtleta(route.params.id as string);
+            alterarAtleta(atleta.value);
+        } else {
+            inserirAtleta(atleta.value);
+        }
+    } catch (error) {
+        console.log(error);
     }
 }
 
@@ -59,7 +63,8 @@ const atleta = ref({
     cpf: "",
     email: "",
     telCelular: "",
-    religiao: ""
+    religiao: "",
+    id: ""
 })
 
 </script>
@@ -67,19 +72,25 @@ const atleta = ref({
 <template>
 
     <div>
-        O id do atleta é {{ $route.params.id }}
+        <router-link :to="`/atletas`" class="btn btn-sm btn-primary mr-1">Lista de Atletas</router-link>
+    </div>
+    <div>
+        <h5 v-if="$route.params.id">
+            Atleta {{ $route.params.id }}
+        </h5>
+        <h5 v-else>
+            Novo Atleta
+        </h5>
     </div>
     <form @submit="formSubmit">
         <div class="form-floating mb-3">
             <input type="text" class="form-control"
-                placeholder="código opcional, se informado deve ser único"
                 v-model="atleta.codigo" 
             >
             <label>Código</label>
         </div>
         <div class="form-floating mb-3">
             <input type="text" class="form-control"
-                placeholder="nome completo"
                 v-model="atleta.nome"
             >
             <label>Nome</label>
