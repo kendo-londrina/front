@@ -1,24 +1,19 @@
 <script setup lang="ts">
 
-import { ref } from 'vue';
-import { storeToRefs } from 'pinia';
-import { useAtletasStore } from '@/stores';
+import { onMounted, ref } from 'vue';
 import ModalConfirm from '@/components/ModalConfirm.vue';
+import { obterAtletas } from '@/views/atletas/Atleta.service';
+import { AtletaDto } from '@/views/atletas/Atleta.dto';
 
-const atletasStore = useAtletasStore();
-const { atletas } = storeToRefs(atletasStore);
-
-atletasStore.getAll();
+const atletas = ref([] as AtletaDto[])
 
 let showConfirm = ref(false);
-// let atletaIdExcluir = ref('');
 let atletaExcluir = ref({
     id: '',
     nome: ''
 });
 function onDeleteClick(atletaId: string, atletaNome: string) {
     showConfirm.value = true;
-    // atletaIdExcluir.value = atletaId;
     atletaExcluir.value = {
         id: atletaId,
         nome: atletaNome
@@ -26,9 +21,20 @@ function onDeleteClick(atletaId: string, atletaNome: string) {
 }
 
 function excluirAtleta() {
-    // atletasStore.delete(atletaId_excluir.value);
     alert(atletaExcluir.value.id);
     showConfirm.value = false;
+}
+
+onMounted(async () => {
+    popularLista();
+})
+
+async function popularLista() {
+    const response = await obterAtletas(1, 10);
+    const objAtletas = response.data as [AtletaDto]
+    objAtletas.forEach(atleta => {
+        atletas.value.push(atleta);
+    });
 }
 
 </script>
