@@ -4,46 +4,43 @@ import { AtletaDto } from '@/views/atletas/Atleta.dto';
 const baseUrl = `${import.meta.env.VITE_API_URL}/alunos`;
 
 export async function obterAtletas(page: number, rows: number) {
-    const response = await fetchWrapper.get(`${baseUrl}/?page=${page}&row=${rows}`, '');
-    return response;
+    try {
+        const response = await fetchWrapper.get(`${baseUrl}/?page=${page}&row=${rows}`, '');
+        return response;
+    } catch (error) {
+        console.error(error);
+    }
 }
 
 export async function obterAtleta(idAtleta: string) {
-    const response = await fetchWrapper.get(`${baseUrl}/?id=${idAtleta}`, '');
-    return response[0];
+    try {
+        const response = await fetchWrapper.get(`${baseUrl}/?id=${idAtleta}`, '');
+        return response[0];
+    } catch (error) {
+        console.error(error);
+    }
 }
 
 export async function alterarAtleta(atleta: AtletaDto) {
     try {
-        const response = await fetchWrapper.put(`${baseUrl}/${atleta.id}`, JSON.stringify(atleta));
-        console.log(response);
-        alert('wait');
+        await fetchWrapper.put(`${baseUrl}/${atleta.id}`, JSON.stringify(atleta));
     } catch (error) {
-        console.log(error);
-        alert('error');
+        console.error(error);
     }
 }
 
 export async function inserirAtleta(atleta: AtletaDto) {
     try {
-        console.log(JSON.stringify(atleta));
-        alert(`${baseUrl}`);
-        const response = await fetchWrapper.post(`${baseUrl}`, JSON.stringify(atleta));
-        console.log(response);
-        alert('wait');
+        await fetchWrapper.post(`${baseUrl}`, JSON.stringify(atleta));
     } catch (error) {
-        console.log(error);
-        alert('error');
+        console.error(error);
     }
 }
 
 export async function excluirAtleta(idAtleta: string) {
     try {
-        const response = await fetchWrapper.delete(`${baseUrl}/${idAtleta}`, '');
-        console.log(response);
-        alert('wait');
+        await fetchWrapper.delete(`${baseUrl}/${idAtleta}`, '');
     } catch (error) {
-        console.log(error);
-        alert('error');
+        console.error(error);
     }
 }

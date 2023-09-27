@@ -2,7 +2,7 @@
 
 import { onMounted, ref } from 'vue';
 import ModalConfirm from '@/components/ModalConfirm.vue';
-import { obterAtletas } from '@/views/atletas/Atleta.service';
+import { excluirAtleta, obterAtletas } from '@/views/atletas/Atleta.service';
 import { AtletaDto } from '@/views/atletas/Atleta.dto';
 
 const atletas = ref([] as AtletaDto[])
@@ -17,24 +17,32 @@ function onDeleteClick(atletaId: string, atletaNome: string) {
     atletaExcluir.value = {
         id: atletaId,
         nome: atletaNome
-    }
-}
-
-function excluirAtleta() {
-    alert(atletaExcluir.value.id);
-    showConfirm.value = false;
+    };
 }
 
 onMounted(async () => {
-    popularLista();
+    carregar();
 })
 
-async function popularLista() {
-    const response = await obterAtletas(1, 10);
-    const objAtletas = response.data as [AtletaDto]
-    objAtletas.forEach(atleta => {
-        atletas.value.push(atleta);
-    });
+async function carregar() {
+    try {
+        const response = await obterAtletas(1, 10);
+        const objAtletas = response.data as [AtletaDto]
+        objAtletas.forEach(atleta => {
+            atletas.value.push(atleta);
+        });
+    } catch (error) {
+        alert(error);
+    }
+}
+
+async function excluir() {
+    showConfirm.value = false;
+    try {
+        await excluirAtleta(atletaExcluir.value.id);
+    } catch (error) {
+        alert(error);
+    }
 }
 
 </script>
@@ -80,7 +88,7 @@ async function popularLista() {
     </table>
     <ModalConfirm :show="showConfirm"
         @clicked-no="showConfirm=false"
-        @clicked-yes="excluirAtleta"
+        @clicked-yes="excluir"
     >
         <template #default>
             Confirma a exclusão do Atleta {{ atletaExcluir.nome }}

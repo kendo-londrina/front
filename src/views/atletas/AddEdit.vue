@@ -1,55 +1,11 @@
 <script setup lang="ts">
-// import { fetchWrapper } from '@/helpers';
+
 import { onMounted, ref } from 'vue';
 import { useRoute } from 'vue-router';
 import { AtletaDto } from '@/views/atletas/Atleta.dto';
 import { alterarAtleta, inserirAtleta, obterAtleta } from '@/views/atletas/Atleta.service';
 
-// const baseUrl = `${import.meta.env.VITE_API_URL}/alunos`;
 const route = useRoute()
-
-onMounted(async () => {
-    if (route.params.id) {
-        popularForm(route.params.id as string);
-    }
-})
-
-async function popularForm(idAtleta: string) {
-    // const response = await fetchWrapper.get(`${baseUrl}/?id=${idAtleta}`, '');
-    const response = await obterAtleta(idAtleta);
-    const objAtleta = response as AtletaDto;
-    atleta.value.codigo = objAtleta.codigo;
-    atleta.value.nome = objAtleta.nome;
-    const x = new Date(objAtleta.dataNascimento);
-    atleta.value.dataNascimento = x.toISOString().substring(0, 10);
-    atleta.value.nacionalidade = objAtleta.nacionalidade;
-    atleta.value.ufNascimento = objAtleta.ufNascimento
-    atleta.value.cidadeNascimento = objAtleta.cidadeNascimento;
-    atleta.value.sexo = objAtleta.sexo;
-    atleta.value.rg = objAtleta.rg;
-    atleta.value.cpf = objAtleta.cpf;
-    atleta.value.email = objAtleta.email;
-    atleta.value.telCelular = objAtleta.telCelular;
-    atleta.value.religiao = objAtleta.religiao;
-    atleta.value.id = objAtleta.id;
-}
-
-// async function alterarAtleta(idAtleta: string) {
-//     await fetchWrapper.put(`${baseUrl}/${idAtleta}`, JSON.stringify(atleta.value));
-// }
-
-function formSubmit() {
-    try {
-        if (route.params.id) {
-            // alterarAtleta(route.params.id as string);
-            alterarAtleta(atleta.value);
-        } else {
-            inserirAtleta(atleta.value);
-        }
-    } catch (error) {
-        console.log(error);
-    }
-}
 
 const atleta = ref({
     codigo: "",
@@ -67,6 +23,46 @@ const atleta = ref({
     id: ""
 })
 
+onMounted(async () => {
+    if (route.params.id) {
+        popularForm(route.params.id as string);
+    }
+})
+
+async function popularForm(idAtleta: string) {
+    try {
+        const response = await obterAtleta(idAtleta);
+        const objAtleta = response as AtletaDto;
+        atleta.value.codigo = objAtleta.codigo;
+        atleta.value.nome = objAtleta.nome;
+        const x = new Date(objAtleta.dataNascimento);
+        atleta.value.dataNascimento = x.toISOString().substring(0, 10);
+        atleta.value.nacionalidade = objAtleta.nacionalidade;
+        atleta.value.ufNascimento = objAtleta.ufNascimento
+        atleta.value.cidadeNascimento = objAtleta.cidadeNascimento;
+        atleta.value.sexo = objAtleta.sexo;
+        atleta.value.rg = objAtleta.rg;
+        atleta.value.cpf = objAtleta.cpf;
+        atleta.value.email = objAtleta.email;
+        atleta.value.telCelular = objAtleta.telCelular;
+        atleta.value.religiao = objAtleta.religiao;
+        atleta.value.id = objAtleta.id;
+    } catch (error) {
+        alert(error);
+    }
+}
+
+function formSubmit() {
+    try {
+        if (route.params.id) {
+            alterarAtleta(atleta.value);
+        } else {
+            inserirAtleta(atleta.value);
+        }
+    } catch (error) {
+        alert(error);
+    }
+}
 </script>
 
 <template>
