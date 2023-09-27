@@ -52,15 +52,11 @@ async function popularForm(idAtleta: string) {
     }
 }
 
-function formSubmit() {
-    try {
-        if (route.params.id) {
-            alterarAtleta(atleta.value);
-        } else {
-            inserirAtleta(atleta.value);
-        }
-    } catch (error) {
-        alert(error);
+async function formSubmit() {
+    if (route.params.id) {
+        await alterarAtleta(atleta.value).catch(e => alert(e));
+    } else {
+        await inserirAtleta(atleta.value).catch(e => alert(e));
     }
 }
 </script>
