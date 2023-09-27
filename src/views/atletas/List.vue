@@ -67,9 +67,8 @@ async function excluir() {
                     <td>{{ atleta.email }}</td>
                     <td style="white-space: nowrap">
                         <router-link :to="`/atletas/edit/${atleta.id}`" class="btn btn-sm btn-primary mr-1">Edit</router-link>
-                        <button @click="onDeleteClick(atleta.id!, atleta.nome!)" class="btn btn-sm btn-danger btn-delete-user" :disabled="atleta.isDeleting">
-                            <span v-if="atleta.isDeleting" class="spinner-border spinner-border-sm"></span>
-                            <span v-else>Delete</span>
+                        <button @click="onDeleteClick(atleta.id!, atleta.nome!)" class="btn btn-sm btn-danger btn-delete-user">
+                            <span>Delete</span>
                         </button>
                     </td>
                 </tr>
