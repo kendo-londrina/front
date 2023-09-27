@@ -39,14 +39,15 @@ export const useAtletasStore = defineStore({
                 // this.alunos = { error };
             }
         },
-        // async getById(id) {
-        //     this.aluno = { loading: true };
-        //     try {
-        //         this.aluno = await fetchWrapper.get(`${baseUrl}/${id}`);
-        //     } catch (error) {
-        //         this.aluno = { error };
-        //     }
-        // },
+        async getById(id: string) {
+            // this.aluno = { loading: true };
+            try {
+                this.atleta = await fetchWrapper.get( `${baseUrl}/${id}`, '');
+            } catch (error) {
+                console.log(error);
+                // this.aluno = { error };
+            }
+        },
         // async update(id, params) {
         //     await fetchWrapper.put(`${baseUrl}/${id}`, params);
 
