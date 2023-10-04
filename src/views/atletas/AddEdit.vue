@@ -1,11 +1,14 @@
 <script setup lang="ts">
 
 import { onMounted, ref } from 'vue';
-import { useRoute } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
 import { AtletaDto } from '@/views/atletas/Atleta.dto';
-import { alterarAtleta, inserirAtleta, obterAtleta } from '@/views/atletas/Atleta.service';
+import ModalConfirm from '@/components/ModalConfirm.vue';
+import { alterarAtleta, excluirAtleta, inserirAtleta, obterAtleta }
+    from '@/views/atletas/Atleta.service';
 
 const route = useRoute()
+const router = useRouter();
 
 const atleta = ref({
     codigo: "",
@@ -58,23 +61,50 @@ async function formSubmit() {
     } else {
         await inserirAtleta(atleta.value).catch(e => alert(e));
     }
+    router.push({ path: '/atletas' });
+}
+
+let showConfirm = ref(false);
+let atletaExcluir = ref({
+    id: '',
+    nome: ''
+});
+
+function onDeleteClick() {
+    showConfirm.value = true;
+    atletaExcluir.value = {
+        id: atleta.value.id ,
+        nome: atleta.value.nome 
+    };
+}
+
+async function excluir() {
+    showConfirm.value = false;
+    try {
+        await excluirAtleta(atletaExcluir.value.id);
+        router.push({ path: '/atletas' });
+    } catch (error) {
+        alert(error);
+    }
 }
 </script>
 
 <template>
+    <div class="header">
+        <div>
+            <h5 v-if="$route.params.id">
+                Alterar Atleta
+            </h5>
+            <h5 v-else>
+                Inserir Novo Atleta
+            </h5>
+        </div>
+        <div>
+            <router-link :to="`/atletas`" class="btn btn-sm btn-primary mr-1">Lista de Atletas</router-link>
+        </div>
+    </div>
 
-    <div>
-        <router-link :to="`/atletas`" class="btn btn-sm btn-primary mr-1">Lista de Atletas</router-link>
-    </div>
-    <div>
-        <h5 v-if="$route.params.id">
-            Atleta {{ $route.params.id }}
-        </h5>
-        <h5 v-else>
-            Novo Atleta
-        </h5>
-    </div>
-    <form @submit="formSubmit">
+    <form @submit.prevent="formSubmit">
         <div class="form-floating mb-3">
             <input type="text" class="form-control"
                 v-model="atleta.codigo" 
@@ -143,9 +173,38 @@ async function formSubmit() {
             <label>Tel.Celular</label>
         </div>
 
-        <button class="btn btn-primary">
-            Salvar
-        </button>
+        <div class="buttons">
+            <button class="btn btn-primary">
+                Salvar
+            </button>
+            <button class="btn btn-danger"
+                v-if="$route.params.id"
+                @click="onDeleteClick()"
+            >
+                Excluir
+            </button>
+        </div>
     </form>
 
+    <ModalConfirm :show="showConfirm"
+        @clicked-no="showConfirm=false"
+        @clicked-yes="excluir"
+    >
+        <template #default>
+            Confirma a exclusão do Atleta {{ atletaExcluir.nome }}
+        </template>
+    </ModalConfirm> 
+
 </template>
+
+<style>
+.header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 15px;
+}
+.buttons {
+    display: flex;
+    justify-content: space-between;
+}
+</style>
