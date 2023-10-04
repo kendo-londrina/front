@@ -25,7 +25,7 @@ async function carregar() {
             atletas.value.push(atleta);
         });
     } catch (error) {
-        alert(error);
+        console.log(error);
     }
 }
 

@@ -2,6 +2,7 @@
 import { Form, Field } from 'vee-validate';
 import * as Yup from 'yup';
 import { useAuthStore } from '@/stores';
+import { useRouter } from 'vue-router';
 
 const schema = Yup.object().shape({
     username: Yup.string().required('Username is required'),
@@ -11,11 +12,13 @@ const schema = Yup.object().shape({
 //   email: 'edsonkoguishi@gmail.com',
 //   senha: 'Teste@123'
 // }
+const router = useRouter();
 
 async function onSubmit(values: any) {
     const authStore = useAuthStore();
     const { username, password } = values;
     await authStore.login(username, password);
+    router.push({ path: `/atletas` });
 }
 </script>
 
