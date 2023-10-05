@@ -1,3 +1,16 @@
+<script setup lang="ts">
+    export interface Props {
+        show?: boolean,
+        yesText?: string,
+        noText?: string
+    }
+    withDefaults(defineProps<Props>(), {
+        show: false,
+        yesText: 'sim',
+        noText: 'não'
+    })
+</script>
+
 <template>
     <div v-if="show" class="modal-mask">
         <div class="modal-container">
@@ -25,25 +38,6 @@
     </div>
 </template>
 
-<script setup lang="ts">
-    // defineProps({
-    //     show: Boolean,
-    //     yesText: String,
-    //     noText: String
-    // });
-    export interface Props {
-        show?: boolean,
-        yesText?: string,
-        noText?: string
-    }
-    withDefaults(defineProps<Props>(), {
-        show: false,
-        yesText: 'sim',
-        noText: 'não'
-    })
-
-</script>
-
 <style>
 .modal-mask {
     position: fixed;
@@ -64,5 +58,7 @@
     margin-top: 1rem;
     padding-top: 0.5rem;
     font-size: .8rem;
+    display: flex;
+    justify-content: space-around;
 }
 </style>

@@ -70,7 +70,7 @@ let atletaExcluir = ref({
     nome: ''
 });
 
-function onDeleteClick() {
+function onExcluirClick() {
     showConfirm.value = true;
     atletaExcluir.value = {
         id: atleta.value.id ,
@@ -172,26 +172,26 @@ async function excluir() {
             >
             <label>Tel.Celular</label>
         </div>
-
-        <div class="buttons">
+        <div>
             <button class="btn btn-primary">
                 Salvar
             </button>
-            <button class="btn btn-danger"
-                v-if="$route.params.id"
-                @click="onDeleteClick()"
-            >
-                Excluir
-            </button>
         </div>
     </form>
+    <br>
+    <button class="btn btn-danger"
+        v-if="$route.params.id"
+        @click="onExcluirClick()"
+    >
+        Excluir o(a) atleta: {{ atleta.nome }}
+    </button>
 
     <ModalConfirm :show="showConfirm"
         @clicked-no="showConfirm=false"
         @clicked-yes="excluir"
     >
         <template #default>
-            Confirma a exclusão do Atleta {{ atletaExcluir.nome }}
+            Confirma a exclusão do Atleta {{ atletaExcluir.nome }} ?
         </template>
     </ModalConfirm> 
 
@@ -202,9 +202,5 @@ async function excluir() {
     display: flex;
     justify-content: space-between;
     margin-bottom: 15px;
-}
-.buttons {
-    display: flex;
-    justify-content: space-between;
 }
 </style>
