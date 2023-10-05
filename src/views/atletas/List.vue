@@ -19,7 +19,7 @@ onMounted(async () => {
 
 async function carregar() {
     try {
-        const response = await obterAtletas(1, 10);
+        const response = await obterAtletas(1, 50);
         const objAtletas = response.data as [AtletaDto]
         objAtletas.forEach(atleta => {
             atletas.value.push(atleta);
