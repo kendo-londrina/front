@@ -3,9 +3,13 @@ import { AtletaDto } from '@/views/atletas/Atleta.dto';
 
 const baseUrl = `${import.meta.env.VITE_API_URL}/alunos`;
 
-export async function obterAtletas(page: number, rows: number) {
+export async function obterAtletas(page?: number, rows?: number) {
     try {
-        const response = await fetchWrapper.get(`${baseUrl}/?page=${page}&row=${rows}`, '');
+        let url = baseUrl + '/';
+        if (page && rows) {
+            url = `${baseUrl}/?page=${page}&row=${rows}`;
+        }
+        const response = await fetchWrapper.get(url, '');
         return response;
     } catch (error) {
         console.error(error);
