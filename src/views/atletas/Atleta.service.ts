@@ -1,7 +1,7 @@
 import { fetchWrapper } from '@/helpers';
 import { AtletaDto } from '@/views/atletas/Atleta.dto';
 
-const baseUrl = `${process.env.VITE_API_URL}/alunos`;
+const baseUrl = `${import.meta.env.VITE_API_URL}/alunos`;
 
 export async function obterAtletas(page?: number, rows?: number) {
     try {
