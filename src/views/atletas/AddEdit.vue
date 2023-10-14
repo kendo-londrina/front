@@ -119,6 +119,7 @@ async function excluir() {
         </div>
         <div class="form-floating mb-3">
             <input type="date" class="form-control"
+                max="9999-01-01"
                 v-model="atleta.dataNascimento"
             >
             <label>Data de nascimento</label>
