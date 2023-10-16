@@ -25,6 +25,8 @@ async function onSubmit(values: any) {
 <template>
     <div class="card m-3">
         <h4 class="card-header">Login</h4>
+        <h1>Vite is running in %MODE%</h1>
+        <p>Using data from %VITE_API_URL%</p>
         <div class="card-body">
             <Form @submit="onSubmit" :validation-schema="schema" v-slot="{ errors, isSubmitting }">
                 <div class="form-group">
