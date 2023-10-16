@@ -19,6 +19,7 @@ const modalidades = ref([]);
 </script>
 
 <template>
+    <h2>Home 15/10/2023-23:31</h2>
     Bora !!!
     <br />
     O id do atleta é {{ $route.params.id }}
