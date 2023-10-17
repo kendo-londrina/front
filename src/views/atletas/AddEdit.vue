@@ -2,6 +2,9 @@
 
 import { onMounted, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
+import { Form, Field } from 'vee-validate';
+import * as Yup from 'yup';
+import { vMaska } from "maska"
 import { AtletaDto } from '@/views/atletas/Atleta.dto';
 import ModalConfirm from '@/components/ModalConfirm.vue';
 import { alterarAtleta, excluirAtleta, inserirAtleta, obterAtleta }
@@ -9,6 +12,24 @@ import { alterarAtleta, excluirAtleta, inserirAtleta, obterAtleta }
 
 const route = useRoute()
 const router = useRouter();
+
+const validationSchema = Yup.object().shape({
+    codigo: Yup.string(),
+    nome: Yup.string().required('Nome é obrigatório'),
+    email: Yup.string().email('e-mail inválido'),
+    dataNascimento: Yup.date()
+        .required('Data de Nascimento é obrigatório')
+        .typeError('Data inválida'),
+    nacionalidade: Yup.string(),
+    ufNascimento: Yup.string(),
+    cidadeNascimento: Yup.string(),
+    sexo: Yup.string(),
+    rg: Yup.string(),
+    cpf: Yup.string(),
+    telCelular: Yup.string(),
+    religiao: Yup.string(),
+    id: Yup.string(),
+});
 
 const atleta = ref({
     codigo: "",
@@ -38,8 +59,8 @@ async function popularForm(idAtleta: string) {
         const objAtleta = response as AtletaDto;
         atleta.value.codigo = objAtleta.codigo;
         atleta.value.nome = objAtleta.nome;
-        const x = new Date(objAtleta.dataNascimento);
-        atleta.value.dataNascimento = x.toISOString().substring(0, 10);
+        const objDate = new Date(objAtleta.dataNascimento);
+        atleta.value.dataNascimento = objDate.toISOString().substring(0, 10);
         atleta.value.nacionalidade = objAtleta.nacionalidade;
         atleta.value.ufNascimento = objAtleta.ufNascimento
         atleta.value.cidadeNascimento = objAtleta.cidadeNascimento;
@@ -55,13 +76,25 @@ async function popularForm(idAtleta: string) {
     }
 }
 
-async function formSubmit() {
+// async function formSubmit() {
+//     if (route.params.id) {
+//         await alterarAtleta(atleta.value).catch(e => alert(e));
+//     } else {
+//         await inserirAtleta(atleta.value).catch(e => alert(e));
+//     }
+//     router.push({ path: '/atletas' });
+// }
+async function onSubmit(values: any) {
+    console.log(values);
+    console.log(atleta.value);
     if (route.params.id) {
-        await alterarAtleta(atleta.value).catch(e => alert(e));
+        values.id = route.params.id;
+        console.log(values);
+        await alterarAtleta(values).catch(e => alert(e));
     } else {
-        await inserirAtleta(atleta.value).catch(e => alert(e));
+        await inserirAtleta(values).catch(e => alert(e));
     }
-    router.push({ path: '/atletas' });
+    router.push({ path: '/atletas' });    
 }
 
 let showConfirm = ref(false);
@@ -104,7 +137,89 @@ async function excluir() {
         </div>
     </div>
 
-    <form @submit.prevent="formSubmit">
+    <Form :initial-values="atleta"
+        @submit="onSubmit"
+        :validation-schema="validationSchema"
+        v-slot="{ errors, isSubmitting }"
+    >
+        <div class="form-floating mb-3">
+            <Field name="codigo" type="text" class="form-control"
+                :class="{ 'is-invalid': errors.codigo }" />
+            <div class="invalid-feedback">{{ errors.codigo }}</div>
+            <label>Código</label>
+        </div>
+        <div class="form-floating mb-3">
+            <Field name="nome" type="text" class="form-control"
+                :class="{ 'is-invalid': errors.nome }" />
+            <div class="invalid-feedback">{{ errors.nome }}</div>
+            <label>Nome</label>
+        </div>
+        <div class="form-floating mb-3">
+            <Field name="telCelular" type="text" class="form-control"
+                v-maska data-maska="(##)#####-####"
+                :class="{ 'is-invalid': errors.telCelular }" />
+            <div class="invalid-feedback">{{ errors.telCelular }}</div>
+            <label>Tel.Celular</label>
+        </div>
+        <div class="form-floating mb-3">
+            <Field name="email" type="text" class="form-control"
+                :class="{ 'is-invalid': errors.email }" />
+            <div class="invalid-feedback">{{ errors.email }}</div>
+            <label>e-mail</label>
+        </div>
+        <div class="form-floating mb-3">
+            <Field name="dataNascimento" type="date" class="form-control"
+                :class="{ 'is-invalid': errors.dataNascimento }" />
+            <div class="invalid-feedback">{{ errors.dataNascimento }}</div>
+            <label>Data de Nascimento</label>
+        </div>
+
+        <div class="form-floating mb-3">
+            <Field name="nacionalidade" type="text" class="form-control"
+                :class="{ 'is-invalid': errors.nacionalidade }" />
+            <div class="invalid-feedback">{{ errors.nacionalidade }}</div>
+            <label>País de Nascimento</label>
+        </div>
+        <div class="form-floating mb-3">
+            <Field name="ufNascimento" type="text" class="form-control"
+                :class="{ 'is-invalid': errors.ufNascimento }" />
+            <div class="invalid-feedback">{{ errors.ufNascimento }}</div>
+            <label>UF de nascimento</label>
+        </div>
+        <div class="form-floating mb-3">
+            <Field name="cidadeNascimento" type="text" class="form-control"
+                :class="{ 'is-invalid': errors.cidadeNascimento }" />
+            <div class="invalid-feedback">{{ errors.cidadeNascimento }}</div>
+            <label>Cidade de nascimento</label>
+        </div>
+        <div class="form-floating mb-3">
+            <Field name="sexo" type="text" class="form-control"
+                :class="{ 'is-invalid': errors.sexo }" />
+            <div class="invalid-feedback">{{ errors.sexo }}</div>
+            <label>Gênero</label>
+        </div>
+        <div class="form-floating mb-3">
+            <Field name="rg" type="text" class="form-control"
+                :class="{ 'is-invalid': errors.rg }" />
+            <div class="invalid-feedback">{{ errors.rg }}</div>
+            <label>RG</label>
+        </div>
+        <div class="form-floating mb-3">
+            <Field name="cpf" type="text" class="form-control"
+                v-maska data-maska="###.###.###-##"
+                :class="{ 'is-invalid': errors.cpf }" />
+            <div class="invalid-feedback">{{ errors.cpf }}</div>
+            <label>CPF</label>
+        </div>
+
+        <div class="form-group">
+            <button class="btn btn-primary" :disabled="isSubmitting">
+                <span v-show="isSubmitting" class="spinner-border spinner-border-sm mr-1"></span>
+                Salvar
+            </button>
+        </div>
+    </Form>
+    <!-- <form @submit.prevent="formSubmit">
         <div class="form-floating mb-3">
             <input type="text" class="form-control"
                 v-model="atleta.codigo" 
@@ -178,7 +293,7 @@ async function excluir() {
                 Salvar
             </button>
         </div>
-    </form>
+    </form> -->
     <br>
     <button class="btn btn-danger"
         v-if="$route.params.id"
