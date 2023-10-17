@@ -9,6 +9,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "maska": "^2.1.10",
     "pinia": "^2.1.6",
     "vee-validate": "^4.5.11",
     "vue": "^3.3.4",
