@@ -1,7 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router';
 
 import { useAuthStore, useAlertStore } from '@/stores';
-import { Example, Home } from '@/views';
 import accountRoutes from './account.routes';
 import atletasRoutes from './atletas.routes';
 
@@ -9,11 +8,11 @@ export const router = createRouter({
     history: createWebHistory(import.meta.env.BASE_URL),
     linkActiveClass: 'active',
     routes: [
-        { path: '/', component: Home },
-        { path: '/example', component: Example },
+        { path: '/', component: () => import('@/views/Home.vue') },
+        { path: '/example', component: () => import('@/views/Example.vue') },
         { ...accountRoutes },
         { ...atletasRoutes },
-        { path: '/:pathMatch(.*)*', redirect: '/' } // catch all redirect to home page
+        { path: '/:pathMatch(.*)*', component: () => import('@/views/NotFound.vue') } 
     ]
 });
 
