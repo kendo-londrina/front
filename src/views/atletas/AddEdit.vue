@@ -76,17 +76,7 @@ async function popularForm(idAtleta: string) {
     }
 }
 
-// async function formSubmit() {
-//     if (route.params.id) {
-//         await alterarAtleta(atleta.value).catch(e => alert(e));
-//     } else {
-//         await inserirAtleta(atleta.value).catch(e => alert(e));
-//     }
-//     router.push({ path: '/atletas' });
-// }
 async function onSubmit(values: any) {
-    console.log(values);
-    console.log(atleta.value);
     if (route.params.id) {
         values.id = route.params.id;
         console.log(values);
@@ -219,81 +209,6 @@ async function excluir() {
             </button>
         </div>
     </Form>
-    <!-- <form @submit.prevent="formSubmit">
-        <div class="form-floating mb-3">
-            <input type="text" class="form-control"
-                v-model="atleta.codigo" 
-            >
-            <label>Código</label>
-        </div>
-        <div class="form-floating mb-3">
-            <input type="text" class="form-control"
-                v-model="atleta.nome"
-            >
-            <label>Nome</label>
-        </div>
-        <div class="form-floating mb-3">
-            <input type="date" class="form-control"
-                max="9999-01-01"
-                v-model="atleta.dataNascimento"
-            >
-            <label>Data de nascimento</label>
-        </div>
-        <div class="form-floating mb-3">
-            <input type="text" class="form-control"
-                v-model="atleta.nacionalidade"
-            >
-            <label>Nacionalidade</label>
-        </div>
-        <div class="form-floating mb-3">
-            <input type="text" class="form-control"
-                v-model="atleta.ufNascimento"
-            >
-            <label>UF de nascimento</label>
-        </div>
-        <div class="form-floating mb-3">
-            <input type="text" class="form-control"
-                v-model="atleta.cidadeNascimento"
-            >
-            <label>Cidade de nascimento</label>
-        </div>
-
-        <div class="form-floating mb-3">
-            <input type="text" class="form-control"
-                v-model="atleta.sexo"
-            >
-            <label>Gênero</label>
-        </div>
-        <div class="form-floating mb-3">
-            <input type="text" class="form-control"
-                v-model="atleta.rg"
-            >
-            <label>RG</label>
-        </div>
-        <div class="form-floating mb-3">
-            <input type="text" class="form-control"
-                v-model="atleta.cpf"
-            >
-            <label>CPF</label>
-        </div>
-        <div class="form-floating mb-3">
-            <input type="text" class="form-control"
-                v-model="atleta.email"
-            >
-            <label>e-mail</label>
-        </div>
-        <div class="form-floating mb-3">
-            <input type="text" class="form-control"
-                v-model="atleta.telCelular"
-            >
-            <label>Tel.Celular</label>
-        </div>
-        <div>
-            <button class="btn btn-primary">
-                Salvar
-            </button>
-        </div>
-    </form> -->
     <br>
     <button class="btn btn-danger"
         v-if="$route.params.id"
