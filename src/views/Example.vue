@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import TheUfSelect from '@/components/TheUfSelect.vue';
 import { onMounted, ref } from 'vue';
 import { useRoute } from 'vue-router';
 
@@ -15,10 +16,13 @@ const modalidade = ref("Individual");
 const graduacao = ref("Não graduado");
 const praticaIai = ref(false);
 const modalidades = ref([]);
+const uf = ref("PR");
 
 </script>
 
 <template>
+    <TheUfSelect v-model="uf"></TheUfSelect>
+    UF: {{ uf }}
     <h2>Home 15/10/2023-23:31</h2>
     Bora !!!
     <br />

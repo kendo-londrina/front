@@ -10,6 +10,7 @@ import ModalConfirm from '@/components/ModalConfirm.vue';
 import { TheGeneroRadio } from '@/components';
 import { alterarAtleta, excluirAtleta, inserirAtleta, obterAtleta }
     from '@/views/atletas/Atleta.service';
+import TheUfSelect from '@/components/TheUfSelect.vue';
 
 const route = useRoute()
 const router = useRouter();
@@ -176,6 +177,9 @@ async function excluir() {
                 :class="{ 'is-invalid': errors.ufNascimento }" />
             <div class="invalid-feedback">{{ errors.ufNascimento }}</div>
             <label>UF de Nascimento</label>
+        </div>
+        <div>
+            <TheUfSelect v-model="atleta.ufNascimento"></TheUfSelect>
         </div>
         <div class="form-floating mb-3">
             <Field name="cidadeNascimento" type="text" class="form-control"
