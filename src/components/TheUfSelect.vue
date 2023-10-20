@@ -27,7 +27,7 @@ async function getUfsFromIbge() {
     const response = await fetchWrapper.get(import.meta.env.VITE_IBGE_ESTADOS, '');
     return response;
   } catch (error) {
-      console.error(error);
+    console.error(error);
   }
 }
 
