@@ -1,6 +1,6 @@
 <script setup lang="ts">
 
-import { onMounted, ref } from 'vue';
+import { onMounted, ref, watch } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { Form, Field } from 'vee-validate';
 import * as Yup from 'yup';
@@ -11,6 +11,7 @@ import { TheGeneroRadio } from '@/components';
 import { alterarAtleta, excluirAtleta, inserirAtleta, obterAtleta }
     from '@/views/atletas/Atleta.service';
 import TheUfSelect from '@/components/TheUfSelect.vue';
+import TheMunicipioSelect from '@/components/TheMunicipioSelect.vue';
 
 const route = useRoute()
 const router = useRouter();
@@ -52,6 +53,13 @@ const atleta = ref({
 onMounted(async () => {
     if (route.params.id) {
         popularForm(route.params.id as string);
+    }
+})
+
+watch(() => atleta.value.ufNascimento, async (newUf, oldUf) => {
+    console.log(newUf, oldUf);
+    if (oldUf != '') {
+        atleta.value.cidadeNascimento = '';
     }
 })
 
@@ -173,19 +181,16 @@ async function excluir() {
             <label>País de Nascimento</label>
         </div>
         <div class="form-floating mb-3">
-            <Field name="ufNascimento" type="text" class="form-control"
-                :class="{ 'is-invalid': errors.ufNascimento }" />
-            <div class="invalid-feedback">{{ errors.ufNascimento }}</div>
+            <TheUfSelect class="form-control" v-model="atleta.ufNascimento"></TheUfSelect>
             <label>UF de Nascimento</label>
-        </div>
-        <div>
-            <TheUfSelect v-model="atleta.ufNascimento"></TheUfSelect>
+            <Field hidden name="ufNascimento" type="text"/>
         </div>
         <div class="form-floating mb-3">
-            <Field name="cidadeNascimento" type="text" class="form-control"
-                :class="{ 'is-invalid': errors.cidadeNascimento }" />
-            <div class="invalid-feedback">{{ errors.cidadeNascimento }}</div>
+            <TheMunicipioSelect class="form-control" :uf="atleta.ufNascimento"
+                v-model="atleta.cidadeNascimento"
+            ></TheMunicipioSelect>
             <label>Cidade de Nascimento</label>
+            <Field hidden name="cidadeNascimento" type="text"/>
         </div>
         <div>
             <label class="genero-label">Gênero</label>
