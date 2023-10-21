@@ -2,7 +2,7 @@
 import { computed, onMounted, reactive, ref, watch } from 'vue'
 import { fetchWrapper } from '@/helpers';
 
-const props = defineProps(['modelValue', 'uf'])
+const props = defineProps(['modelValue', 'uf', 'isFormControl'])
 const emit = defineEmits(['update:modelValue'])
 const value = computed({
   get() {
@@ -50,7 +50,7 @@ watch(() => props.uf, async (newUf) => {
     loading...
   </template>
   <template v-else>
-    <select v-model="value">
+    <select :class="{'form-control': props.isFormControl}" v-model="value">
       <option v-for="municipio in municipios" :key="municipio.id" :value="municipio.nome">{{ municipio.nome }}</option>
     </select>
   </template>

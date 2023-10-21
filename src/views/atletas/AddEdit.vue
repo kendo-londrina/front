@@ -1,6 +1,6 @@
 <script setup lang="ts">
 
-import { onMounted, ref, watch } from 'vue';
+import { computed, onMounted, ref, watch } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { Form, Field } from 'vee-validate';
 import * as Yup from 'yup';
@@ -10,6 +10,7 @@ import ModalConfirm from '@/components/ModalConfirm.vue';
 import { TheGeneroRadio } from '@/components';
 import { alterarAtleta, excluirAtleta, inserirAtleta, obterAtleta }
     from '@/views/atletas/Atleta.service';
+import ThePaisSelect from '@/components/ThePaisSelect.vue';
 import TheUfSelect from '@/components/TheUfSelect.vue';
 import TheMunicipioSelect from '@/components/TheMunicipioSelect.vue';
 
@@ -19,7 +20,7 @@ const router = useRouter();
 const validationSchema = Yup.object().shape({
     codigo: Yup.string(),
     nome: Yup.string().required('Informe o Nome'),
-    email: Yup.string().email('Informe o e-mail'),
+    email: Yup.string().email('Informe um e-mail válido'),
     dataNascimento: Yup.date()
         .required('Informe a Data de Nascimento')
         .typeError('Data inválida'),
@@ -61,6 +62,10 @@ watch(() => atleta.value.ufNascimento, async (newUf, oldUf) => {
     if (oldUf != '') {
         atleta.value.cidadeNascimento = '';
     }
+})
+
+const isBrasileiro = computed(() => {
+  return atleta.value.nacionalidade === 'Brasil';
 })
 
 async function popularForm(idAtleta: string) {
@@ -175,18 +180,25 @@ async function excluir() {
         </div>
 
         <div class="form-floating mb-3">
-            <Field name="nacionalidade" type="text" class="form-control"
-                :class="{ 'is-invalid': errors.nacionalidade }" />
-            <div class="invalid-feedback">{{ errors.nacionalidade }}</div>
+            <ThePaisSelect
+                is-form-control="true"
+                v-model="atleta.nacionalidade"
+            ></ThePaisSelect>
             <label>País de Nascimento</label>
+            <Field hidden name="nacionalidade" type="text"/>
         </div>
-        <div class="form-floating mb-3">
-            <TheUfSelect class="form-control" v-model="atleta.ufNascimento"></TheUfSelect>
+        <div class="form-floating mb-3" v-if="isBrasileiro">
+            <TheUfSelect
+                is-form-control="true"
+                v-model="atleta.ufNascimento"
+            ></TheUfSelect>
             <label>UF de Nascimento</label>
             <Field hidden name="ufNascimento" type="text"/>
         </div>
-        <div class="form-floating mb-3">
-            <TheMunicipioSelect class="form-control" :uf="atleta.ufNascimento"
+        <div class="form-floating mb-3" v-if="isBrasileiro">
+            <TheMunicipioSelect
+                is-form-control="true"
+                :uf="atleta.ufNascimento"
                 v-model="atleta.cidadeNascimento"
             ></TheMunicipioSelect>
             <label>Cidade de Nascimento</label>

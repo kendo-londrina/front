@@ -15,16 +15,15 @@ const value = computed({
 
 const loading = ref(true);
 
-let ufs = reactive([
+let paises = reactive([
   {
-    sigla: '',
     nome: '',
   }
 ]);
 
-async function getUfsFromIbge() {
+async function getPaisesFromIbge() {
   try {
-    const response = await fetchWrapper.get(import.meta.env.VITE_IBGE_ESTADOS, '');
+    const response = await fetchWrapper.get(import.meta.env.VITE_IBGE_PAISES, '');
     return response;
   } catch (error) {
     console.error(error);
@@ -32,7 +31,7 @@ async function getUfsFromIbge() {
 }
 
 onMounted(async () => {
-  ufs = await getUfsFromIbge();
+  paises = await getPaisesFromIbge();
   loading.value = false;
 })
 
@@ -44,7 +43,7 @@ onMounted(async () => {
   </template>
   <template v-else>
     <select :class="{'form-control': props.isFormControl}" v-model="value">
-      <option v-for="uf in ufs" :key="uf.sigla" :value="uf.sigla">{{ uf.nome }}</option>
+      <option v-for="pais in paises" :key="pais.nome" :value="pais.nome">{{ pais.nome }}</option>
     </select>
   </template>
 </template>
