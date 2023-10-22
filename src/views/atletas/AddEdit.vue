@@ -1,12 +1,13 @@
 <script setup lang="ts">
 
-import { onMounted, ref } from 'vue';
+import { computed, onMounted, ref, watch } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { Form, Field } from 'vee-validate';
 import * as Yup from 'yup';
 import { vMaska } from "maska"
 import { AtletaDto } from '@/views/atletas/Atleta.dto';
 import ModalConfirm from '@/components/ModalConfirm.vue';
+import { TheGeneroRadio, ThePaisSelect, TheUfSelect, TheMunicipioSelect } from '@/components';
 import { alterarAtleta, excluirAtleta, inserirAtleta, obterAtleta }
     from '@/views/atletas/Atleta.service';
 
@@ -15,10 +16,10 @@ const router = useRouter();
 
 const validationSchema = Yup.object().shape({
     codigo: Yup.string(),
-    nome: Yup.string().required('Nome é obrigatório'),
-    email: Yup.string().email('e-mail inválido'),
+    nome: Yup.string().required('Informe o Nome'),
+    email: Yup.string().email('Informe um e-mail válido'),
     dataNascimento: Yup.date()
-        .required('Data de Nascimento é obrigatório')
+        .required('Informe a Data de Nascimento')
         .typeError('Data inválida'),
     nacionalidade: Yup.string(),
     ufNascimento: Yup.string(),
@@ -38,7 +39,7 @@ const atleta = ref({
     nacionalidade: "",
     ufNascimento: "",
     cidadeNascimento: "",
-    sexo: "",
+    sexo: "N",
     rg: "",
     cpf: "",
     email: "",
@@ -51,6 +52,29 @@ onMounted(async () => {
     if (route.params.id) {
         popularForm(route.params.id as string);
     }
+})
+
+watch(() =>
+    [
+        atleta.value.nacionalidade,
+        atleta.value.ufNascimento,
+    ],
+    async (newValue, oldValue) => {
+        if (newValue[0] !== oldValue[0]) {
+            if (oldValue[0] != '') {
+                atleta.value.ufNascimento = '';
+            }
+        }
+        if (newValue[1] !== oldValue[1]) {
+            if (oldValue[1] != '') {
+                atleta.value.cidadeNascimento = '';
+            }
+        }
+    }
+)
+
+const isBrasileiro = computed(() => {
+  return atleta.value.nacionalidade === 'Brasil';
 })
 
 async function popularForm(idAtleta: string) {
@@ -78,8 +102,6 @@ async function popularForm(idAtleta: string) {
 
 async function onSubmit(values: any) {
     if (route.params.id) {
-        values.id = route.params.id;
-        console.log(values);
         await alterarAtleta(values).catch(e => alert(e));
     } else {
         await inserirAtleta(values).catch(e => alert(e));
@@ -165,28 +187,38 @@ async function excluir() {
         </div>
 
         <div class="form-floating mb-3">
-            <Field name="nacionalidade" type="text" class="form-control"
-                :class="{ 'is-invalid': errors.nacionalidade }" />
-            <div class="invalid-feedback">{{ errors.nacionalidade }}</div>
+            <ThePaisSelect
+                is-form-control="true"
+                v-model="atleta.nacionalidade"
+            ></ThePaisSelect>
             <label>País de Nascimento</label>
+            <Field hidden name="nacionalidade" type="text"/>
         </div>
-        <div class="form-floating mb-3">
-            <Field name="ufNascimento" type="text" class="form-control"
-                :class="{ 'is-invalid': errors.ufNascimento }" />
-            <div class="invalid-feedback">{{ errors.ufNascimento }}</div>
-            <label>UF de nascimento</label>
+        <div class="form-floating mb-3" v-if="isBrasileiro">
+            <TheUfSelect
+                is-form-control="true"
+                v-model="atleta.ufNascimento"
+            ></TheUfSelect>
+            <label>UF de Nascimento</label>
         </div>
-        <div class="form-floating mb-3">
-            <Field name="cidadeNascimento" type="text" class="form-control"
-                :class="{ 'is-invalid': errors.cidadeNascimento }" />
-            <div class="invalid-feedback">{{ errors.cidadeNascimento }}</div>
-            <label>Cidade de nascimento</label>
+        <Field hidden name="ufNascimento" type="text"/>
+        <div class="form-floating mb-3" v-if="isBrasileiro">
+            <TheMunicipioSelect
+                is-form-control="true"
+                :uf="atleta.ufNascimento"
+                v-model="atleta.cidadeNascimento"
+            ></TheMunicipioSelect>
+            <label>Cidade de Nascimento</label>
         </div>
-        <div class="form-floating mb-3">
-            <Field name="sexo" type="text" class="form-control"
-                :class="{ 'is-invalid': errors.sexo }" />
-            <div class="invalid-feedback">{{ errors.sexo }}</div>
-            <label>Gênero</label>
+        <Field hidden name="cidadeNascimento" type="text"/>
+        <div>
+            <label class="genero-label">Gênero</label>
+            <div class="genero-radio">
+                <TheGeneroRadio 
+                    v-model="atleta.sexo">
+                </TheGeneroRadio>
+            </div>
+            <Field hidden name="sexo" type="text" />
         </div>
         <div class="form-floating mb-3">
             <Field name="rg" type="text" class="form-control"
@@ -201,6 +233,8 @@ async function excluir() {
             <div class="invalid-feedback">{{ errors.cpf }}</div>
             <label>CPF</label>
         </div>
+
+        <Field hidden name="id" type="text" />
 
         <div class="form-group">
             <button class="btn btn-primary" :disabled="isSubmitting">
@@ -228,10 +262,19 @@ async function excluir() {
 
 </template>
 
-<style>
+<style scoped>
 .header {
     display: flex;
     justify-content: space-between;
     margin-bottom: 15px;
+}
+.genero-label {
+    opacity: .65;
+    font-size: small;
+    margin-left: 15px;
+}
+.genero-radio {
+    padding-left: 20px;
+    margin-bottom: 20px;
 }
 </style>
