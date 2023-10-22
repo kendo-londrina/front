@@ -57,12 +57,24 @@ onMounted(async () => {
     }
 })
 
-watch(() => atleta.value.ufNascimento, async (newUf, oldUf) => {
-    console.log(newUf, oldUf);
-    if (oldUf != '') {
-        atleta.value.cidadeNascimento = '';
+watch(() =>
+    [
+        atleta.value.nacionalidade,
+        atleta.value.ufNascimento,
+    ],
+    async (newValue, oldValue) => {
+        if (newValue[0] !== oldValue[0]) {
+            if (oldValue[0] != '') {
+                atleta.value.ufNascimento = '';
+            }
+        }
+        if (newValue[1] !== oldValue[1]) {
+            if (oldValue[1] != '') {
+                atleta.value.cidadeNascimento = '';
+            }
+        }
     }
-})
+)
 
 const isBrasileiro = computed(() => {
   return atleta.value.nacionalidade === 'Brasil';
@@ -93,8 +105,6 @@ async function popularForm(idAtleta: string) {
 
 async function onSubmit(values: any) {
     if (route.params.id) {
-        values.id = route.params.id;
-        console.log(values);
         await alterarAtleta(values).catch(e => alert(e));
     } else {
         await inserirAtleta(values).catch(e => alert(e));
@@ -193,8 +203,8 @@ async function excluir() {
                 v-model="atleta.ufNascimento"
             ></TheUfSelect>
             <label>UF de Nascimento</label>
-            <Field hidden name="ufNascimento" type="text"/>
         </div>
+        <Field hidden name="ufNascimento" type="text"/>
         <div class="form-floating mb-3" v-if="isBrasileiro">
             <TheMunicipioSelect
                 is-form-control="true"
@@ -202,8 +212,8 @@ async function excluir() {
                 v-model="atleta.cidadeNascimento"
             ></TheMunicipioSelect>
             <label>Cidade de Nascimento</label>
-            <Field hidden name="cidadeNascimento" type="text"/>
         </div>
+        <Field hidden name="cidadeNascimento" type="text"/>
         <div>
             <label class="genero-label">Gênero</label>
             <div class="genero-radio">
@@ -226,6 +236,8 @@ async function excluir() {
             <div class="invalid-feedback">{{ errors.cpf }}</div>
             <label>CPF</label>
         </div>
+
+        <Field hidden name="id" type="text" />
 
         <div class="form-group">
             <button class="btn btn-primary" :disabled="isSubmitting">
