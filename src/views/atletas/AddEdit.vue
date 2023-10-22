@@ -7,12 +7,9 @@ import * as Yup from 'yup';
 import { vMaska } from "maska"
 import { AtletaDto } from '@/views/atletas/Atleta.dto';
 import ModalConfirm from '@/components/ModalConfirm.vue';
-import { TheGeneroRadio } from '@/components';
+import { TheGeneroRadio, ThePaisSelect, TheUfSelect, TheMunicipioSelect } from '@/components';
 import { alterarAtleta, excluirAtleta, inserirAtleta, obterAtleta }
     from '@/views/atletas/Atleta.service';
-import ThePaisSelect from '@/components/ThePaisSelect.vue';
-import TheUfSelect from '@/components/TheUfSelect.vue';
-import TheMunicipioSelect from '@/components/TheMunicipioSelect.vue';
 
 const route = useRoute()
 const router = useRouter();
