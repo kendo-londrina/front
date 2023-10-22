@@ -23,6 +23,9 @@ let municipios = reactive([
 ]);
 
 async function getMunicipiosFromIbge(uf: string) {
+  if (uf.trim() == '') {
+    return;
+  }
   const url = (import.meta.env.VITE_IBGE_MUNICIPIOS as string).replace('{{uf}}', uf);
   try {
     const response = await fetchWrapper.get(url, '');
