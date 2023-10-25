@@ -152,21 +152,23 @@ function onSelect() {
 			v-show="paisesFiltrados.length && pais.length >= 1"
 			class="list-group lista-paises border"
 		>
-			<li
-				v-for="(opt, index) in paisesFiltrados"
-				class="list-group-item"
-				style="border: none;"
-				:class="{ 'active': arrowCounter === index }"
-				:key="opt.nome"
-				:id="`opt-pais-${index}`"
-				tabindex="0"
-				@mouseover="setArrowCounter(index)"
-				@click="onPaisesFiltradosClick(opt.nome)"
-			>
-				<span class="font-normal">
-					{{ opt.nome }}
-				</span>
-			</li>
+			<ul style="padding-left: 0px;">
+				<li
+					v-for="(opt, index) in paisesFiltrados"
+					class="list-group-item"
+					style="border: none;"
+					:class="{ 'active': arrowCounter === index }"
+					:key="opt.nome"
+					:id="`opt-pais-${index}`"
+					tabindex="0"
+					@mouseover="setArrowCounter(index)"
+					@click="onPaisesFiltradosClick(opt.nome)"
+				>
+					<span class="font-normal">
+						{{ opt.nome }}
+					</span>
+				</li>
+			</ul>
 		</div>
 	</template>
 </template>

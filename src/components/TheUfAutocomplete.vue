@@ -172,21 +172,23 @@ function onSelect() {
 			v-show="ufsFiltrados.length && ufNome.length"
 			class="list-group lista-ufs border"
 		>
-			<li
-				v-for="(opt, index) in ufsFiltrados"
-				class="list-group-item"
-				style="border: none;"
-				:class="{ 'active': arrowCounter === index }"
-				:key="opt.nome"
-				:id="`opt-ufs-${index}`"
-				tabindex="0"
-				@mouseover="setArrowCounter(index)"
-				@click="onUfsFiltradosClick(opt.sigla)"
-			>
-				<span class="font-normal">
-					{{ opt.nome }}
-				</span>
-			</li>
+			<ul style="padding-left: 0px;">
+				<li
+					v-for="(opt, index) in ufsFiltrados"
+					class="list-group-item"
+					style="border: none;"
+					:class="{ 'active': arrowCounter === index }"
+					:key="opt.nome"
+					:id="`opt-ufs-${index}`"
+					tabindex="0"
+					@mouseover="setArrowCounter(index)"
+					@click="onUfsFiltradosClick(opt.sigla)"
+				>
+					<span class="font-normal">
+						{{ opt.nome }}
+					</span>
+				</li>
+			</ul>
 		</div>
 	</template>
 </template>

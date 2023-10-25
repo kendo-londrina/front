@@ -166,21 +166,23 @@ function onSelect() {
 			v-show="municipiosFiltrados.length && municipio.length"
 			class="list-group lista-municipios border"
 		>
-			<li
-				v-for="(opt, index) in municipiosFiltrados"
-				class="list-group-item"
-				style="border: none;"
-				:class="{ 'active': arrowCounter === index }"
-				:key="opt.nome"
-				:id="`opt-municipio-${index}`"
-				tabindex="0"
-				@mouseover="setArrowCounter(index)"
-				@click="onMunicipiosFiltradosClick(opt.nome)"
-			>
-				<span class="font-normal">
-					{{ opt.nome }}
-				</span>
-			</li>
+			<ul style="padding-left: 0px;">
+				<li
+					v-for="(opt, index) in municipiosFiltrados"
+					class="list-group-item"
+					style="border: none;"
+					:class="{ 'active': arrowCounter === index }"
+					:key="opt.nome"
+					:id="`opt-municipio-${index}`"
+					tabindex="0"
+					@mouseover="setArrowCounter(index)"
+					@click="onMunicipiosFiltradosClick(opt.nome)"
+				>
+					<span class="font-normal">
+						{{ opt.nome }}
+					</span>
+				</li>
+			</ul>
 		</div>
 	</template>
 </template>
