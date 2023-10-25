@@ -177,7 +177,9 @@ function onSelect() {
 				@mouseover="setArrowCounter(index)"
 				@click="onMunicipiosFiltradosClick(opt.nome)"
 			>
-				<span class="font-normal" v-html="opt.nome"/>
+				<span class="font-normal">
+					{{ opt.nome }}
+				</span>
 			</li>
 		</div>
 	</template>
