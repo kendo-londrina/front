@@ -136,7 +136,7 @@ function onArrowUp() {
 }
 
 function fixScrolling() {
-	var ufElement = document.getElementById(`opt-ufs-${arrowCounter.value}`);
+	const ufElement = document.getElementById(`opt-ufs-${arrowCounter.value}`);
 	if (ufElement) {
 		ufElement.scrollIntoView(
 			{

@@ -117,7 +117,7 @@ function onArrowUp() {
 }
 
 function fixScrolling() {
-	var paisElement = document.getElementById(`opt-pais-${arrowCounter.value}`);
+	const paisElement = document.getElementById(`opt-pais-${arrowCounter.value}`);
 	if (paisElement) {
 		paisElement.scrollIntoView(
 			{
