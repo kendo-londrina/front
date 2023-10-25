@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import { computed, onMounted, reactive, ref } from 'vue'
+import { computed, onMounted, reactive, ref, watch } from 'vue'
 import { fetchWrapper } from '@/helpers';
 
-const props = defineProps(['modelValue'])
+const props = defineProps(['modelValue', 'uf'])
 const emit = defineEmits(['update:modelValue'])
-const pais = computed({
+const municipio = computed({
 	get() {
 		return props.modelValue;
 	},
@@ -16,28 +16,42 @@ const pais = computed({
 const loading = ref(true);
 const arrowCounter = ref(0);
 
-let paises = reactive([
+let municipios = reactive([
 	{
+		id: '',
 		nome: '',
 	}
 ]);
-let paisesFiltrados = ref([
+let municipiosFiltrados = ref([
 	{
+		id: '',
 		nome: '',
 	}
 ]);
 
-async function getPaisesFromIbge() {
-	try {
-		const response = await fetchWrapper.get(import.meta.env.VITE_IBGE_PAISES, '');
-		return response;
-	} catch (error) {
-		console.error(error);
-	}
+async function getMunicipiosFromIbge(uf: string) {
+	if (uf.trim() == '') {
+    	return;
+  	}
+  	const url = (import.meta.env.VITE_IBGE_MUNICIPIOS as string).replace('{{uf}}', uf);
+  	try {
+    	const response = await fetchWrapper.get(url, '');
+    	return response;
+  	} catch (error) {
+    	console.error(error);
+  	}
 }
 
 onMounted(async () => {
-	paises = await getPaisesFromIbge();
+	municipios = await getMunicipiosFromIbge(props.uf);
+	resetOptions();
+	setArrowCounter(0);
+	loading.value = false;
+})
+
+watch(() => props.uf, async (newUf) => {
+  	loading.value = true;
+	municipios = await getMunicipiosFromIbge(newUf);
 	resetOptions();
 	setArrowCounter(0);
 	loading.value = false;
@@ -46,12 +60,12 @@ onMounted(async () => {
 function onInput(event: any) {
 	if (event) {
 		resetOptions();
-		filterPaises(event.target.value);
+		filterMunicipios(event.target.value);
 	}
 }
 
-function filterPaises(filterBy: string) {
-	paisesFiltrados.value = paises.filter(
+function filterMunicipios(filterBy: string) {
+	municipiosFiltrados.value = municipios.filter(
 		p => p.nome.toLowerCase()
 			.normalize("NFD").replace(/[\u0300-\u036f]/g, "")
 			.search(
@@ -67,17 +81,17 @@ function setArrowCounter(number: number) {
 }
 
 function resetOptions() {
-	paisesFiltrados.value = []
+	municipiosFiltrados.value = []
 }
 
-function onPaisesFiltradosClick(opt: string) {
-	pais.value = opt;
+function onMunicipiosFiltradosClick(opt: string) {
+	municipio.value = opt;
 	resetOptions();
 	setArrowCounter(0);
 }
 
 function onKeydown(evt: any) {
-	if (!paisesFiltrados.value.length) { return; }
+	if (!municipiosFiltrados.value.length) { return; }
 	switch (evt.code) {
 		case 'ArrowDown':
 			evt.preventDefault();
@@ -103,7 +117,7 @@ function onEsc() {
 }
 
 function onArrowDown() {
-	if (arrowCounter.value < paisesFiltrados.value.length - 1) {
+	if (arrowCounter.value < municipiosFiltrados.value.length - 1) {
 		arrowCounter.value++;
 	}
 	fixScrolling();
@@ -117,9 +131,9 @@ function onArrowUp() {
 }
 
 function fixScrolling() {
-	var paisElement = document.getElementById(`opt-pais-${arrowCounter.value}`);
-	if (paisElement) {
-		paisElement.scrollIntoView(
+	const municipioElement = document.getElementById(`opt-municipio-${arrowCounter.value}`);
+	if (municipioElement) {
+		municipioElement.scrollIntoView(
 			{
 				behavior: 'smooth',
 				block: 'nearest',
@@ -130,7 +144,7 @@ function fixScrolling() {
 }
 
 function onSelect() {
-	pais.value = paisesFiltrados.value[arrowCounter.value].nome;
+	municipio.value = municipiosFiltrados.value[arrowCounter.value].nome;
 	resetOptions();
 	setArrowCounter(0);
 }
@@ -142,26 +156,26 @@ function onSelect() {
 	</template>
 	<template v-else>
 		<input
-			v-model="pais"
+			v-model="municipio"
 			class="form-control"
 			type="text"
 			@input="onInput"
 			@keydown="onKeydown"
 		/>
 		<div
-			v-show="paisesFiltrados.length && pais.length >= 1"
-			class="list-group lista-paises border"
+			v-show="municipiosFiltrados.length && municipio.length"
+			class="list-group lista-municipios border"
 		>
 			<li
-				v-for="(opt, index) in paisesFiltrados"
+				v-for="(opt, index) in municipiosFiltrados"
 				class="list-group-item"
 				style="border: none;"
 				:class="{ 'active': arrowCounter === index }"
 				:key="opt.nome"
-				:id="`opt-pais-${index}`"
+				:id="`opt-municipio-${index}`"
 				tabindex="0"
 				@mouseover="setArrowCounter(index)"
-				@click="onPaisesFiltradosClick(opt.nome)"
+				@click="onMunicipiosFiltradosClick(opt.nome)"
 			>
 				<span class="font-normal" v-html="opt.nome"/>
 			</li>
@@ -170,7 +184,7 @@ function onSelect() {
 </template>
 
 <style scoped>
-.lista-paises {
+.lista-municipios {
 	max-height: 200px;
 	overflow-y: scroll;
 	margin-left: 16px;

@@ -8,8 +8,10 @@ import { vMaska } from "maska"
 import { AtletaDto } from '@/views/atletas/Atleta.dto';
 import ModalConfirm from '@/components/ModalConfirm.vue';
 import {
-    TheGeneroRadio, ThePaisSelect, TheUfSelect, TheMunicipioSelect,
-    ThePaisAutocomplete } from '@/components';
+    TheGeneroRadio, TheUfSelect,
+    ThePaisAutocomplete,
+    TheMunicipioAutocomplete
+} from '@/components';
 import { alterarAtleta, excluirAtleta, inserirAtleta, obterAtleta }
     from '@/views/atletas/Atleta.service';
 
@@ -193,8 +195,8 @@ async function excluir() {
                 v-model="atleta.nacionalidade"
             ></ThePaisAutocomplete>
             <label>País de Nascimento</label>
-            <Field hidden name="nacionalidade" type="text"/>
         </div>
+        <Field hidden name="nacionalidade" type="text"/>
         <div class="form-floating mb-3" v-if="isBrasileiro">
             <TheUfSelect
                 is-form-control="true"
@@ -204,11 +206,10 @@ async function excluir() {
         </div>
         <Field hidden name="ufNascimento" type="text"/>
         <div class="form-floating mb-3" v-if="isBrasileiro">
-            <TheMunicipioSelect
-                is-form-control="true"
+            <TheMunicipioAutocomplete
                 :uf="atleta.ufNascimento"
                 v-model="atleta.cidadeNascimento"
-            ></TheMunicipioSelect>
+            ></TheMunicipioAutocomplete>
             <label>Cidade de Nascimento</label>
         </div>
         <Field hidden name="cidadeNascimento" type="text"/>
