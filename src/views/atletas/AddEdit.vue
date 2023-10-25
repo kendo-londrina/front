@@ -7,7 +7,9 @@ import * as Yup from 'yup';
 import { vMaska } from "maska"
 import { AtletaDto } from '@/views/atletas/Atleta.dto';
 import ModalConfirm from '@/components/ModalConfirm.vue';
-import { TheGeneroRadio, ThePaisSelect, TheUfSelect, TheMunicipioSelect } from '@/components';
+import {
+    TheGeneroRadio, ThePaisSelect, TheUfSelect, TheMunicipioSelect,
+    ThePaisAutocomplete } from '@/components';
 import { alterarAtleta, excluirAtleta, inserirAtleta, obterAtleta }
     from '@/views/atletas/Atleta.service';
 
@@ -187,10 +189,9 @@ async function excluir() {
         </div>
 
         <div class="form-floating mb-3">
-            <ThePaisSelect
-                is-form-control="true"
+            <ThePaisAutocomplete
                 v-model="atleta.nacionalidade"
-            ></ThePaisSelect>
+            ></ThePaisAutocomplete>
             <label>País de Nascimento</label>
             <Field hidden name="nacionalidade" type="text"/>
         </div>

@@ -141,16 +141,13 @@ function onSelect() {
 		loading...
 	</template>
 	<template v-else>
-		<div class="form-floating">
-			<input
-				v-model="value"
-				class="form-control"
-				type="text"
-				@input="onInput"
-				@keydown="onKeydown"
-			/>
-			<label>País de Nascimento...</label>
-		</div>
+		<input
+			v-model="value"
+			class="form-control"
+			type="text"
+			@input="onInput"
+			@keydown="onKeydown"
+		/>
 		<div
 			v-show="paisesFiltrados.length && value.length >= 1"
 			class="list-group lista-paises border"
