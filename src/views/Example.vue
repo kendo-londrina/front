@@ -4,6 +4,7 @@ import TheUfSelect from '@/components/TheUfSelect.vue';
 import ThePaisSelect from '@/components/ThePaisSelect.vue';
 import { onMounted, ref } from 'vue';
 import { useRoute } from 'vue-router';
+import { ThePaisAutocomplete } from '@/components';
 
 const route = useRoute()
 
@@ -25,6 +26,11 @@ const municipio = ref("Londrina");
 </script>
 
 <template>
+    <div>
+        <ThePaisAutocomplete
+            v-model="pais"
+        ></ThePaisAutocomplete>
+    </div>
     <ThePaisSelect v-model="pais"></ThePaisSelect>
     País: {{ pais }}
     <br>
@@ -96,3 +102,9 @@ const municipio = ref("Londrina");
     ></form>
 
 </template>
+
+<style scoped>
+    .resto {
+        display: block;
+    }
+</style>
