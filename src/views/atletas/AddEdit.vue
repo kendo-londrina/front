@@ -7,20 +7,34 @@ import * as Yup from 'yup';
 import { vMaska } from "maska"
 import { AtletaDto } from '@/views/atletas/Atleta.dto';
 import ModalConfirm from '@/components/ModalConfirm.vue';
-import { TheGeneroRadio, ThePaisSelect, TheUfSelect, TheMunicipioSelect } from '@/components';
+import {
+    TheGeneroRadio,
+    ThePaisAutocomplete,
+    TheUfAutocomplete,
+    TheMunicipioAutocomplete
+} from '@/components';
 import { alterarAtleta, excluirAtleta, inserirAtleta, obterAtleta }
     from '@/views/atletas/Atleta.service';
 
 const route = useRoute()
 const router = useRouter();
 
+function isValidDate(s: string) {
+  var bits = s.split('/');
+  var d = new Date(Number(bits[2]), Number(bits[1]) - 1, Number(bits[0]));
+  return d && (d.getMonth() + 1) == Number(bits[1]);
+}
+
 const validationSchema = Yup.object().shape({
     codigo: Yup.string(),
     nome: Yup.string().required('Informe o Nome'),
     email: Yup.string().email('Informe um e-mail válido'),
-    dataNascimento: Yup.date()
+    dataNascimento: Yup.string()
         .required('Informe a Data de Nascimento')
-        .typeError('Data inválida'),
+        .test('valid-date', 'Informe uma data válida no formato dd/mm/aaaa',
+            function(value) {
+                return isValidDate(value as string);
+            }),
     nacionalidade: Yup.string(),
     ufNascimento: Yup.string(),
     cidadeNascimento: Yup.string(),
@@ -180,34 +194,33 @@ async function excluir() {
             <label>e-mail</label>
         </div>
         <div class="form-floating mb-3">
-            <Field name="dataNascimento" type="date" class="form-control"
+            <Field name="dataNascimento" type="text"
+                v-maska data-maska="##/##/####"
+                class="form-control"
                 :class="{ 'is-invalid': errors.dataNascimento }" />
             <div class="invalid-feedback">{{ errors.dataNascimento }}</div>
             <label>Data de Nascimento</label>
         </div>
 
         <div class="form-floating mb-3">
-            <ThePaisSelect
-                is-form-control="true"
+            <ThePaisAutocomplete
                 v-model="atleta.nacionalidade"
-            ></ThePaisSelect>
+            ></ThePaisAutocomplete>
             <label>País de Nascimento</label>
-            <Field hidden name="nacionalidade" type="text"/>
         </div>
+        <Field hidden name="nacionalidade" type="text"/>
         <div class="form-floating mb-3" v-if="isBrasileiro">
-            <TheUfSelect
-                is-form-control="true"
+            <TheUfAutocomplete
                 v-model="atleta.ufNascimento"
-            ></TheUfSelect>
+            ></TheUfAutocomplete>
             <label>UF de Nascimento</label>
         </div>
         <Field hidden name="ufNascimento" type="text"/>
         <div class="form-floating mb-3" v-if="isBrasileiro">
-            <TheMunicipioSelect
-                is-form-control="true"
+            <TheMunicipioAutocomplete
                 :uf="atleta.ufNascimento"
                 v-model="atleta.cidadeNascimento"
-            ></TheMunicipioSelect>
+            ></TheMunicipioAutocomplete>
             <label>Cidade de Nascimento</label>
         </div>
         <Field hidden name="cidadeNascimento" type="text"/>

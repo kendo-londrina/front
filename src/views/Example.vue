@@ -1,9 +1,7 @@
 <script setup lang="ts">
-import TheMunicipioSelect from '@/components/TheMunicipioSelect.vue';
-import TheUfSelect from '@/components/TheUfSelect.vue';
-import ThePaisSelect from '@/components/ThePaisSelect.vue';
 import { onMounted, ref } from 'vue';
 import { useRoute } from 'vue-router';
+import { ThePaisAutocomplete } from '@/components';
 
 const route = useRoute()
 
@@ -19,21 +17,15 @@ const graduacao = ref("Não graduado");
 const praticaIai = ref(false);
 const modalidades = ref([]);
 const pais = ref("BRASIL");
-const uf = ref("PR");
-const municipio = ref("Londrina");
 
 </script>
 
 <template>
-    <ThePaisSelect v-model="pais"></ThePaisSelect>
-    País: {{ pais }}
-    <br>
-    <TheUfSelect v-model="uf"></TheUfSelect>
-    UF: {{ uf }}
-    <br>
-    <TheMunicipioSelect :uf="uf" v-model="municipio"></TheMunicipioSelect>
-    Município: {{ municipio }}
-    <br>
+    <div>
+        <ThePaisAutocomplete
+            v-model="pais"
+        ></ThePaisAutocomplete>
+    </div>
     <h2>Home 15/10/2023-23:31</h2>
     Bora !!!
     <br />
@@ -96,3 +88,9 @@ const municipio = ref("Londrina");
     ></form>
 
 </template>
+
+<style scoped>
+    .resto {
+        display: block;
+    }
+</style>
