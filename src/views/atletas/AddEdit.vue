@@ -19,13 +19,22 @@ import { alterarAtleta, excluirAtleta, inserirAtleta, obterAtleta }
 const route = useRoute()
 const router = useRouter();
 
+function isValidDate(s: string) {
+  var bits = s.split('/');
+  var d = new Date(Number(bits[2]), Number(bits[1]) - 1, Number(bits[0]));
+  return d && (d.getMonth() + 1) == Number(bits[1]);
+}
+
 const validationSchema = Yup.object().shape({
     codigo: Yup.string(),
     nome: Yup.string().required('Informe o Nome'),
     email: Yup.string().email('Informe um e-mail válido'),
-    dataNascimento: Yup.date()
+    dataNascimento: Yup.string()
         .required('Informe a Data de Nascimento')
-        .typeError('Data inválida'),
+        .test('valid-date', 'Informe uma data válida no formato dd/mm/aaaa',
+            function(value) {
+                return isValidDate(value as string);
+            }),
     nacionalidade: Yup.string(),
     ufNascimento: Yup.string(),
     cidadeNascimento: Yup.string(),
@@ -185,7 +194,9 @@ async function excluir() {
             <label>e-mail</label>
         </div>
         <div class="form-floating mb-3">
-            <Field name="dataNascimento" type="date" class="form-control"
+            <Field name="dataNascimento" type="text"
+                v-maska data-maska="##/##/####"
+                class="form-control"
                 :class="{ 'is-invalid': errors.dataNascimento }" />
             <div class="invalid-feedback">{{ errors.dataNascimento }}</div>
             <label>Data de Nascimento</label>
