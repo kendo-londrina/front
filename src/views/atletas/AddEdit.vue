@@ -20,9 +20,12 @@ const route = useRoute()
 const router = useRouter();
 
 function isValidDate(s: string) {
-  var bits = s.split('/');
-  var d = new Date(Number(bits[2]), Number(bits[1]) - 1, Number(bits[0]));
-  return d && (d.getMonth() + 1) == Number(bits[1]);
+    if (s) {
+        var bits = s.split('/');
+        var d = new Date(Number(bits[2]), Number(bits[1]) - 1, Number(bits[0]));
+        return d && (d.getMonth() + 1) == Number(bits[1]);
+    }
+    return true;
 }
 
 const validationSchema = Yup.object().shape({
@@ -31,6 +34,7 @@ const validationSchema = Yup.object().shape({
     email: Yup.string().email('Informe um e-mail válido'),
     dataNascimento: Yup.string()
         .required('Informe a Data de Nascimento')
+        .min(10, 'Complete a Data de Nascimento')
         .test('valid-date', 'Informe uma data válida no formato dd/mm/aaaa',
             function(value) {
                 return isValidDate(value as string);
@@ -91,14 +95,22 @@ const isBrasileiro = computed(() => {
   return atleta.value.nacionalidade === 'Brasil';
 })
 
+function toFormDate(s: string): string {
+    var bits = s.substring(0, 10).split('-');
+    return `${bits[2]}/${bits[1]}/${bits[0]}`;
+}
+function toBaseDate(s: string): string {
+    var bits = s.substring(0, 10).split('/');
+    return `${bits[2]}-${bits[1]}-${bits[0]}`;
+}
+
 async function popularForm(idAtleta: string) {
     try {
         const response = await obterAtleta(idAtleta);
         const objAtleta = response as AtletaDto;
         atleta.value.codigo = objAtleta.codigo;
         atleta.value.nome = objAtleta.nome;
-        const objDate = new Date(objAtleta.dataNascimento);
-        atleta.value.dataNascimento = objDate.toISOString().substring(0, 10);
+        atleta.value.dataNascimento = toFormDate(objAtleta.dataNascimento);
         atleta.value.nacionalidade = objAtleta.nacionalidade;
         atleta.value.ufNascimento = objAtleta.ufNascimento
         atleta.value.cidadeNascimento = objAtleta.cidadeNascimento;
@@ -115,6 +127,7 @@ async function popularForm(idAtleta: string) {
 }
 
 async function onSubmit(values: any) {
+    values.dataNascimento = toBaseDate(values.dataNascimento);
     if (route.params.id) {
         await alterarAtleta(values).catch(e => alert(e));
     } else {
