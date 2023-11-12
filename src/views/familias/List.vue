@@ -20,7 +20,7 @@ onMounted(async () => {
 async function carregar() {
     try {
         const response = await obterFamilias(1, 50);
-        const objFamilias = response.data as [FamiliaDto]
+        const objFamilias = response.data as [FamiliaDto];
         objFamilias.forEach(familia => {
             familias.value.push(familia);
         });
@@ -34,7 +34,7 @@ async function carregar() {
 <template>
     <div class="header">
         <h1>Familias</h1>
-        <router-link to="/atletas/add" class="btn btn-sm btn-success mb-2">Nova Família</router-link>
+        <router-link to="/familias/add" class="btn btn-sm btn-success mb-2">Nova Família</router-link>
     </div>
     <table class="table table-striped">
         <thead>
