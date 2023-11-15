@@ -37,6 +37,7 @@ async function carregar() {
         <router-link to="/atletas/add" class="btn btn-sm btn-success mb-2">Novo Atleta</router-link>
     </div>
     <table class="table table-striped">
+        <caption></caption>
         <thead>
             <tr>
                 <th style="width: 20%">Código</th>
