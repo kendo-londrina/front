@@ -37,6 +37,7 @@ async function carregar() {
         <router-link to="/familias/add" class="btn btn-sm btn-success mb-2">Nova Família</router-link>
     </div>
     <table class="table table-striped">
+        <caption></caption>
         <thead>
             <tr>
                 <th style="width: 100%">Nome</th>
