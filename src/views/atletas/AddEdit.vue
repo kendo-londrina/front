@@ -21,8 +21,8 @@ const router = useRouter();
 
 function isValidDate(s: string) {
     if (s) {
-        var bits = s.split('/');
-        var d = new Date(Number(bits[2]), Number(bits[1]) - 1, Number(bits[0]));
+        const bits = s.split('/');
+        const d = new Date(Number(bits[2]), Number(bits[1]) - 1, Number(bits[0]));
         return d && (d.getMonth() + 1) == Number(bits[1]);
     }
     return true;
@@ -96,11 +96,11 @@ const isBrasileiro = computed(() => {
 })
 
 function toFormDate(s: string): string {
-    var bits = s.substring(0, 10).split('-');
+    const bits = s.substring(0, 10).split('-');
     return `${bits[2]}/${bits[1]}/${bits[0]}`;
 }
 function toBaseDate(s: string): string {
-    var bits = s.substring(0, 10).split('/');
+    const bits = s.substring(0, 10).split('/');
     return `${bits[2]}-${bits[1]}-${bits[0]}`;
 }
 
