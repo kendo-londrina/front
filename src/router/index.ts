@@ -26,11 +26,35 @@ router.beforeEach(async (to) => {
     // redirect to login page if not logged in and trying to access a restricted page 
     const publicPages = ['/account/login', '/account/register', '/example'];
     const authRequired = !publicPages.includes(to.path);
-    const authStore = useAuthStore();
 
-    //if (authRequired && !authStore.user) {
-    if (authRequired && !localStorage.getItem('user')) {
-        authStore.returnUrl = to.fullPath;
-        return '/account/login';
+    if (authRequired) {
+        if (!localStorage.getItem('user')) {
+            const authStore = useAuthStore();
+            authStore.returnUrl = to.fullPath;
+            return '/account/login';
+        }
+        const user = JSON.parse(localStorage.getItem('user')!);
+        console.log(user.accessToken);
+        const payloadData = parseJwt(user.accessToken);
+        if (payloadData.exp < Date.now()/1000) {
+            const authStore = useAuthStore();
+            try {
+                await authStore.refreshToken(user.accessToken, user.refreshToken)
+                router.push({ path: to.path });
+            } catch (error) {
+                console.log(error);
+            }            
+        }
     }
+
 });
+
+function parseJwt(token: string) {
+    const base64Url = token.split('.')[1];
+    const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+    const jsonPayload = decodeURIComponent(window.atob(base64).split('').map(function(c) {
+        return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+    }).join(''));
+
+    return JSON.parse(jsonPayload);
+};
