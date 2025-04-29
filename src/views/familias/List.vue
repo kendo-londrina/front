@@ -33,7 +33,7 @@ async function carregar() {
 
 <template>
     <div class="header">
-        <h1>Familias</h1>
+        <h1>Fami__lias</h1>
         <router-link to="/familias/add" class="btn btn-sm btn-success mb-2">Nova Família</router-link>
     </div>
     <table class="table table-striped">
