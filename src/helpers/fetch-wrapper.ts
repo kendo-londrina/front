@@ -9,22 +9,6 @@ export const fetchWrapper = {
 
 function request(method: string) {
     return async (url: string, body: string) => {
-        // const requestOptions = {
-        //     method,
-        //     headers: authHeader(url)
-        // };
-        // if (body) {
-        //     requestOptions.headers['Content-Type'] = 'application/json';
-        //     requestOptions.body = JSON.stringify(body);
-        // }
-        // const requestOptions = {
-        //     method,
-        //     headers: {
-        //       "Content-type": "application/json",
-        //     },
-        //     body
-        // };
-
         const options: Record<string, any> = {};
         options.method = method;
         options.headers = authHeader(url);
@@ -42,10 +26,10 @@ function request(method: string) {
 function authHeader(url: string) {
     // return auth header with jwt if user is logged in and request is to the api url
     const { user } = useAuthStore();
-    const isLoggedIn = !!user?.token;
-    const isApiUrl = url.startsWith(import.meta.env.VITE_API_URL!);
+    const isLoggedIn = !!user?.accessToken;
+    const isApiUrl = url.startsWith(import.meta.env.VITE_API_URL);
     if (isLoggedIn && isApiUrl) {
-        return { Authorization: `Bearer ${user.token}` };
+        return { Authorization: `Bearer ${user.accessToken}` };
     } else {
         return { Authorization: ''};
     }
@@ -64,7 +48,7 @@ async function handleResponse(response: any) {
         }
 
         // get error message from body or default to response status
-        const error = (data && data.message) || response.status;
+        const error = (data?.message) || response.status;
         return Promise.reject(error);
     }
 
