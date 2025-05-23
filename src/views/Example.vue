@@ -26,7 +26,7 @@ const pais = ref("BRASIL");
             v-model="pais"
         ></ThePaisAutocomplete>
     </div>
-    <h2>Home 03/05/2025-20:47</h2>
+    <h2>Home 23/05/2025-20:47</h2>
     Bora !!!
     <br />
     O id do atleta é {{ $route.params.id }}
